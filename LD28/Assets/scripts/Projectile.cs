@@ -15,7 +15,6 @@ public class Projectile : MonoBehaviour {
 		Vector3 current = transform.position;
 		RaycastHit hit;
 		if (Physics.Raycast (previous, transform.forward, out hit, Vector3.Distance(previous,current))) {
-			Debug.Log (hit.transform.name);
 			Instantiate(explosion,transform.position,Quaternion.identity);
 			Destroy(gameObject);
 		}
