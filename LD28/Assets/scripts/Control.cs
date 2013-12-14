@@ -7,7 +7,7 @@ public class Control : MonoBehaviour {
 	public float speed;
 	public float mult = 1;
 	public int holdlimit = 10;
-	
+	public int health = 10;
 	public Detector detector;
 	public Collider detectorCollider;
 	public List<string> hold = new List<string>();
@@ -15,12 +15,31 @@ public class Control : MonoBehaviour {
 	
 	public Transform unloadPoint;
 	
+	public static Control instance;
+	
+	public void Awake(){
+		instance = this;
+	}
+	
 	public bool AtLimit{
 		get{
 			return hold.Count >= holdlimit;
 		}
 	}
 	bool unloading;
+	bool deathStarted;
+	public void Update(){
+		if(health <=0 && !deathStarted){
+			deathStarted = true;
+			collider.isTrigger = false;
+			rigidbody.useGravity = true;
+			StartCoroutine(Death());
+		}
+		
+		if(health <=0){
+			rigidbody.AddForce(-transform.up *100*Time.deltaTime,ForceMode.Impulse);
+		}
+	}
 	
 	public void AddToHold(Collectable col){
 		if((hold.Count + col.size) <=holdlimit){
@@ -29,6 +48,7 @@ public class Control : MonoBehaviour {
 	}
 	
 	void FixedUpdate () {
+		
 		float x = Input.GetAxis("Horizontal");
 		float y = Input.GetAxis("Vertical");
 		bool boost = Input.GetKey(KeyCode.LeftShift ) || Input.GetKey(KeyCode.RightShift);
@@ -55,6 +75,11 @@ public class Control : MonoBehaviour {
 			BeamOff();
 		}
 	
+	}
+	
+	public IEnumerator Death(){
+		yield return new WaitForSeconds(5.0f);
+		Destroy(gameObject);
 	}
 	
 	public IEnumerator Unload(){

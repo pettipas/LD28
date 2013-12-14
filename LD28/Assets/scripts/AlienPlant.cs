@@ -8,12 +8,13 @@ public class AlienPlant : MonoBehaviour {
 	public Queue<Collectable> toEat = new Queue<Collectable>();
 	
 	public void Grow(Collectable col){
+		Debug.Log (col);
 		transform.localScale +=new Vector3(col.size/10.0f,col.size/10.0f,0);
 	}
 	
 	public void OnTriggerEnter(Collider other){
 		Collectable pickup = other.GetComponent<Collectable>();
-		if(!toEat.Contains(pickup)){
+		if(pickup != null && !toEat.Contains(pickup)){
 			toEat.Enqueue(pickup);
 		}
 	}
