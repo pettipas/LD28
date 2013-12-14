@@ -9,7 +9,6 @@ public class EnemyLauncher : MonoBehaviour {
 	bool started;
 	
 	public void Update(){
-		
 		if(target != null && !started){
 			started = true;
 			StartCoroutine(ShootWhenClose());

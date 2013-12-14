@@ -37,6 +37,7 @@ public class Control : MonoBehaviour {
 		}
 		
 		if(health <=0){
+			Debug.Log("gameover");
 			rigidbody.AddForce(-transform.up *100*Time.deltaTime,ForceMode.Impulse);
 		}
 	}
