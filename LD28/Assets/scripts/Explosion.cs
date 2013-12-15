@@ -3,8 +3,11 @@ using System.Collections;
 
 public class Explosion : MonoBehaviour {
 
+    public float t;
+    public AudioSource source;
 	public IEnumerator Start(){
-		yield return new WaitForSeconds(0.2f);
+        source.Play();
+        yield return new WaitForSeconds(t);
 		Destroy(gameObject);
 	}
 }

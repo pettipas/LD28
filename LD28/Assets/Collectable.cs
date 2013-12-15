@@ -4,7 +4,7 @@ using System.Collections;
 public class Collectable : MonoBehaviour {
 
 	public Control attractor;
-	public float mag = 10;
+	public float mag = 100;
 	public int size;
 	
 	public void FixedUpdate(){
@@ -13,13 +13,11 @@ public class Collectable : MonoBehaviour {
 			Vector3 dir = (a - transform.position).normalized;
 			rigidbody.AddForce(dir * mag * Time.deltaTime, ForceMode.Impulse);
 		}
-		
-		
 	}
 	
 	
 	public void Update(){
-		if(attractor != null && Vector3.Distance(attractor.transform.position,transform.position) < 5.0f){
+		if(attractor != null && Vector3.Distance(attractor.transform.position,transform.position) < 20.0f){
 			attractor.AddToHold(this);
 			GetCollected();
 		}

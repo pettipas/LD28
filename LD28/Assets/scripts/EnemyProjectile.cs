@@ -15,7 +15,7 @@ public class EnemyProjectile : MonoBehaviour {
 		Vector3 current = transform.position;
 		RaycastHit hit;
 		if (Physics.Raycast (previous, transform.forward, out hit, Vector3.Distance(previous,current)) && hit.transform.name == "ship") {
-			hit.transform.GetComponent<Control>().health -= 1;
+			hit.transform.GetComponent<Control>().hits += 1;
 			Instantiate(explosion,transform.position,Quaternion.identity);
 			Destroy(gameObject);
 		}

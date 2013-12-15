@@ -5,7 +5,7 @@ public class Launcher : MonoBehaviour {
 	
 	public GameObject reticle;
 	public GameObject projectile;
-	
+    public AudioSource shotSound;
 	public void Update(){
 		var mousePos = Input.mousePosition;
    		Vector3 p= Camera.main.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, 0));
@@ -13,6 +13,7 @@ public class Launcher : MonoBehaviour {
 		transform.LookAt(reticle.transform);
 		
 		if(Input.GetMouseButtonUp(0)){
+            shotSound.Play();
 			Instantiate(projectile,transform.position,transform.rotation);
 		}
 	}

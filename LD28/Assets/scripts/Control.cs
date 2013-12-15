@@ -7,16 +7,19 @@ public class Control : MonoBehaviour {
 	public float speed;
 	public float mult = 1;
 	public int holdlimit = 10;
-	public int health = 10;
+	public int hits = 0;
 	public Detector detector;
 	public Collider detectorCollider;
 	public List<string> hold = new List<string>();
 	public List<GameObject> prefabs = new List<GameObject>();
 	
 	public Transform unloadPoint;
-	
+    public Transform beam;
 	public static Control instance;
-	
+    public List<GameObject> life = new List<GameObject>();
+
+    public AudioSource beamsound;
+
 	public void Awake(){
 		instance = this;
 	}
@@ -29,14 +32,14 @@ public class Control : MonoBehaviour {
 	bool unloading;
 	bool deathStarted;
 	public void Update(){
-		if(health <=0 && !deathStarted){
+        if (hits >= life.Count && !deathStarted) {
 			deathStarted = true;
 			collider.isTrigger = false;
 			rigidbody.useGravity = true;
 			StartCoroutine(Death());
 		}
-		
-		if(health <=0){
+
+        if (hits >= life.Count) {
 			Debug.Log("gameover");
 			rigidbody.AddForce(-transform.up *100*Time.deltaTime,ForceMode.Impulse);
 		}
@@ -75,10 +78,20 @@ public class Control : MonoBehaviour {
 		}else {
 			BeamOff();
 		}
-	
+
+        if (hits > 0 && hits <= life.Count-1) {
+            for (int i = 0; i < hits; i++) {
+                life[i].renderer.enabled = false;
+                life[i].light.enabled = false;
+            }
+        }
 	}
 	
 	public IEnumerator Death(){
+        for (int i = 0; i < hits; i++) {
+            life[i].renderer.enabled = false;
+            life[i].light.enabled = false;
+        }
 		yield return new WaitForSeconds(5.0f);
 		Destroy(gameObject);
 	}
@@ -88,7 +101,7 @@ public class Control : MonoBehaviour {
 			GameObject go = prefabs.Find(c => c.name == hold[i]);
 			GameObject falling = Instantiate(go, unloadPoint.transform.position, Quaternion.identity) as GameObject;
 			falling.name = go.name;
-			yield return new WaitForSeconds(0.3f);
+			yield return new WaitForSeconds(0.2f);
 		}
 		hold.Clear();
 		unloading = false;
@@ -96,10 +109,16 @@ public class Control : MonoBehaviour {
 	}
 	
 	public void BeamOn(){
+        if (!beamsound.isPlaying) {
+            beamsound.Play();
+        }
 		detectorCollider.enabled = true;
+        beam.renderer.enabled = true;
 	}
 	
 	public void BeamOff(){
+        beamsound.Stop();
+        beam.renderer.enabled = false;
 		detector.collectables.ForEach(c=>{
 			c.attractor = null;
 		});
