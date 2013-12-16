@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour {
     public float health = 5;
     public List<Transform> expoints = new List<Transform>();
     bool deathStarted;
-
+	public Respawner respawner;
 	void Awake(){
 		launcher = GetComponentInChildren<EnemyLauncher>();
 	}
@@ -19,7 +19,6 @@ public class Enemy : MonoBehaviour {
 	void Start () {
 		launcher.target = Control.instance.gameObject;
 	}
-
 
     public void Update() {
         if (health <= 0 && !deathStarted) {
@@ -37,6 +36,7 @@ public class Enemy : MonoBehaviour {
             yield return new WaitForSeconds(0.2f);
         }
         Destroy(gameObject);
+		Instantiate(respawner,transform.position,Quaternion.identity);
     }
   
 

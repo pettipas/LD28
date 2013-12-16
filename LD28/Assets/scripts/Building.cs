@@ -12,7 +12,6 @@ public class Building : MonoBehaviour {
 
     public IEnumerator Death() {
         List<Vector3> points = GetListOfPoints();
-
         int num = Random.Range(1, 3);
 
         for (int i = 0; i < points.Count; i++) {
@@ -28,12 +27,14 @@ public class Building : MonoBehaviour {
         spawns.ForEach(p => list.Add(p.position));
         return list;
     }
+	
+	
 	void Update () {
         if (!destroyed && health <= 0) {
             destroyed = true;
             GetComponentInChildren<Renderer>().enabled = false;
             GetComponent<Collider>().enabled = false;
-            Instantiate(destroyedBuilding,transform.position,Quaternion.identity);
+            Instantiate(destroyedBuilding,new Vector3(transform.position.x,transform.position.y,60),Quaternion.identity);
             StartCoroutine(Death());
         }
 	}

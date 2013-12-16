@@ -17,7 +17,8 @@ public class Control : MonoBehaviour {
     public Transform beam;
 	public static Control instance;
     public List<GameObject> life = new List<GameObject>();
-
+	
+	public GUIText text;
     public AudioSource beamsound;
 
 	public void Awake(){
@@ -44,7 +45,7 @@ public class Control : MonoBehaviour {
 			rigidbody.AddForce(-transform.up *100*Time.deltaTime,ForceMode.Impulse);
 		}
 	}
-	
+	bool showing;
 	public void AddToHold(Collectable col){
 		if((hold.Count + col.size) <=holdlimit){
 			hold.Add(col.name);
@@ -73,6 +74,12 @@ public class Control : MonoBehaviour {
 		
 		rigidbody.AddForce(new Vector3(x,y/2.0f,0) * (speed * mult) *Time.deltaTime, ForceMode.Impulse);
 		
+		if(AtLimit){
+			text.text = "CARGO BAY FULL";
+		}else {
+			text.text = "READY FOR HUMANS";
+		}
+		
 		if(beam && !AtLimit){
 			BeamOn();
 		}else {
@@ -85,6 +92,13 @@ public class Control : MonoBehaviour {
                 life[i].light.enabled = false;
             }
         }
+	}
+	
+	public IEnumerator ShowMessage(string message){
+		text.text = message;
+		yield return new WaitForSeconds(2);
+		showing = false;
+		text.enabled = false;
 	}
 	
 	public IEnumerator Death(){

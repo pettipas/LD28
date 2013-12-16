@@ -7,15 +7,16 @@ public class AlienPlant : MonoBehaviour {
 
     public int eaten;
     public List<Vines> disabledVines = new List<Vines>();
-	public float timeToLive = 300;
-	public Queue<Collectable> toEat = new Queue<Collectable>();
 
+	public Queue<Collectable> toEat = new Queue<Collectable>();
+	public AudioSource aquisition;
     public void Start() {
         disabledVines = GetComponentsInChildren<Vines>().ToList();
     }
 
 	public void Grow(Collectable col){
         eaten += 1;
+		aquisition.Play();
 		transform.localScale +=new Vector3(col.size/100.0f,col.size/100.0f,0);
         if (eaten == 5) {
             Vines v = disabledVines[0];
@@ -24,15 +25,7 @@ public class AlienPlant : MonoBehaviour {
         }
 	}
 	
-	public void Update(){
-		timeToLive-=Time.deltaTime;
-		
-		if(timeToLive <= 0){
-			Debug.Log("gameover");
-		}
-
-
-	}
+	
 	
 	public void OnTriggerEnter(Collider other){
 		Collectable pickup = other.GetComponent<Collectable>();

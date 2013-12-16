@@ -21,10 +21,16 @@ public class EnemyLauncher : MonoBehaviour {
 	
 	public IEnumerator ShootWhenClose(){
 		while(target != null){
+			if(target == null){
+				yield break;
+			}
+			yield return new WaitForSeconds(1.5f);
+			if(target == null){
+				yield break;
+			}
 			if(Vector3.Distance(target.transform.position,transform.position) < range){
 				Instantiate(projectile,transform.position,transform.rotation);
 			}
-			yield return new WaitForSeconds(2.0f);
 		}
 		started = false;
 	}
