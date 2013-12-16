@@ -58,9 +58,11 @@ public class Control : MonoBehaviour {
 		float y = Input.GetAxis("Vertical");
 		bool boost = Input.GetKey(KeyCode.LeftShift ) || Input.GetKey(KeyCode.RightShift);
 		bool opendoors = Input.GetKey(KeyCode.Space);
-		bool beam = Input.GetMouseButton(1);
+		bool beam = Input.GetKey(KeyCode.E) || Input.GetMouseButton(1);
 		
-		
+		if(Input.GetKey(KeyCode.G)){
+			Application.LoadLevel("start");
+		}
 		if(opendoors && hold.Count > 0 && !unloading){
 			unloading = true;
 			StartCoroutine(Unload());
@@ -75,7 +77,7 @@ public class Control : MonoBehaviour {
 		rigidbody.AddForce(new Vector3(x,y/2.0f,0) * (speed * mult) *Time.deltaTime, ForceMode.Impulse);
 		
 		if(AtLimit){
-			text.text = "CARGO BAY FULL";
+			text.text = "CARGO BAY FULL. GO FEED THE PLANT!";
 		}else {
 			text.text = "READY FOR HUMANS";
 		}
@@ -108,6 +110,7 @@ public class Control : MonoBehaviour {
         }
 		yield return new WaitForSeconds(5.0f);
 		Destroy(gameObject);
+		Application.LoadLevel("gameover");
 	}
 	
 	public IEnumerator Unload(){
