@@ -11,6 +11,8 @@ public class AlienPlant : MonoBehaviour {
 
 	public Queue<Collectable> toEat = new Queue<Collectable>();
 	public AudioSource aquisition;
+	public AudioSource music;
+	
 	int maxVines;
 	int totalVines;
     public void Start() {
@@ -23,6 +25,7 @@ public class AlienPlant : MonoBehaviour {
 		aquisition.Play();
 		transform.localScale +=new Vector3(col.size/100.0f,col.size/100.0f,0);
         if (eaten == 5) {
+			music.pitch +=0.01f;
 			totalVines++;
             Vines v = disabledVines[0];
             v.enabled = true;

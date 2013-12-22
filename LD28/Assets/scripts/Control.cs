@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 
 public class Control : MonoBehaviour {
+	
 	public float speed;
 	public float mult = 1;
 	public int holdlimit = 10;
@@ -11,6 +12,7 @@ public class Control : MonoBehaviour {
 	public Detector detector;
 	public Collider detectorCollider;
 	public List<string> hold = new List<string>();
+	public List<GameObject> holdguys = new List<GameObject>();
 	public List<GameObject> prefabs = new List<GameObject>();
 	
 	public Transform unloadPoint;
@@ -20,6 +22,7 @@ public class Control : MonoBehaviour {
 	
 	public GUIText text;
     public AudioSource beamsound;
+	public AudioSource collected;
 
 	public void Awake(){
 		instance = this;
@@ -32,7 +35,8 @@ public class Control : MonoBehaviour {
 	}
 	bool unloading;
 	bool deathStarted;
-	public void Update(){
+	public void Update() {
+		
         if (hits >= life.Count && !deathStarted) {
 			deathStarted = true;
 			collider.isTrigger = false;
@@ -41,15 +45,17 @@ public class Control : MonoBehaviour {
 		}
 
         if (hits >= life.Count) {
-			Debug.Log("gameover");
 			rigidbody.AddForce(-transform.up *100*Time.deltaTime,ForceMode.Impulse);
 		}
 	}
 	bool showing;
 	public void AddToHold(Collectable col){
+		collected.Play();
 		if((hold.Count + col.size) <=holdlimit){
 			hold.Add(col.name);
+			holdguys[hold.Count-1].GetComponent<MeshRenderer>().enabled = true;
 		}
+		
 	}
 	
 	void FixedUpdate () {
@@ -67,7 +73,7 @@ public class Control : MonoBehaviour {
 			unloading = true;
 			StartCoroutine(Unload());
 		}
-		
+		text.text = hold.Count+"/7";
 		if(boost) {
 			mult = 3.0f;
 		}else {
@@ -75,12 +81,6 @@ public class Control : MonoBehaviour {
 		}
 		
 		rigidbody.AddForce(new Vector3(x,y/2.0f,0) * (speed * mult) *Time.deltaTime, ForceMode.Impulse);
-		
-		if(AtLimit){
-			text.text = "CARGO BAY FULL. GO FEED THE PLANT!";
-		}else {
-			text.text = "READY FOR HUMANS";
-		}
 		
 		if(beam && !AtLimit){
 			BeamOn();
@@ -118,7 +118,9 @@ public class Control : MonoBehaviour {
 			GameObject go = prefabs.Find(c => c.name == hold[i]);
 			GameObject falling = Instantiate(go, unloadPoint.transform.position, Quaternion.identity) as GameObject;
 			falling.name = go.name;
+			holdguys[i].GetComponent<MeshRenderer>().enabled = false;
 			yield return new WaitForSeconds(0.2f);
+			
 		}
 		hold.Clear();
 		unloading = false;
